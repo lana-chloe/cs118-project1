@@ -1,5 +1,4 @@
-# CS118 Project 0
-
+# CS118 Project 0 - Lana Lim 105817312
 This is the repo for spring23 cs118 project 0.
 
 ## Academic Integrity Note
