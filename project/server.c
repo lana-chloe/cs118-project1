@@ -74,7 +74,7 @@ int main() {
 
     char tmp[strlen(fileName) + 1]; 
     strcpy(tmp, fileName);
-    printf("%s\n", fileName);
+    //printf("%s\n", fileName);
         
     // file is in directory
     if (fileStatus == 1) {
