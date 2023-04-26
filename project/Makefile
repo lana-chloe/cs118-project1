@@ -2,16 +2,17 @@ CC=gcc
 CFLAGS=-I.
 DEPS=
 OBJ=server.o
-USERID=123456789
+USERID=105817312
+
+all: server
+
+server: server.c
+	gcc -o server server.c
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-all: server
-server: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS)
-
-clean:
+clean: // this is not right
 	rm -rf *.o server *.tar.gz
 
 dist: tarball
