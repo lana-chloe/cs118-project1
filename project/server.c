@@ -27,8 +27,13 @@ int main() {
         exit(1);
     }
 
+    // set SO_REUSEPORT
+    int optval = 1;
+    setsockopt(server_socket, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval));
+
     // define the address
     struct sockaddr_in server_address;
+    memset(&server_address, 0, sizeof(server_address));
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = INADDR_ANY;
     server_address.sin_port = htons(PORT);
@@ -74,7 +79,7 @@ int main() {
     // get file name
     request = buf;
     requestName = requestHandler(request);
-    printf("%s\n", requestName);
+    //printf("%s\n", requestName);
 
     fileName = fStatus(requestName);
 
@@ -87,7 +92,7 @@ int main() {
     char tmp[strlen(fileName) + 1]; 
     strcpy(tmp, fileName);
 
-    printf("%s\n", fileName);
+    //printf("%s\n", fileName);
         
     // file is in directory
     if (fileStatus == 1) {
