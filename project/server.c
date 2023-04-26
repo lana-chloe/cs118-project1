@@ -200,14 +200,17 @@ char* fType(const char* fn) {
     char* type; 
     char* filetype = strrchr(fileName,'.');
 
-    if((strcmp(filetype,".htm"))==0 || (strcmp(filetype,".html"))==0)
-        type="text/html";
-    else if(strcmp(filetype,".txt")==0) 
-        type="text/plain";
-    else if((strcmp(filetype,".jpg"))==0 || (strcmp(filetype,".jpeg"))==0) 
-        type="image/jpeg";
-    else if(strcmp(filetype,".png")==0) 
-        type="image/png";
+    if(filetype != NULL) {
+        if((strcmp(filetype,".htm"))==0 || (strcmp(filetype,".html"))==0)
+            type="text/html";
+        else if(strcmp(filetype,".txt")==0) 
+            type="text/plain";
+        else if((strcmp(filetype,".jpg"))==0 || (strcmp(filetype,".jpeg"))==0) 
+            type="image/jpeg";
+        else if(strcmp(filetype,".png")==0) 
+            type="image/png";
+    }
+    else type = "application/octet-stream";
     return type;
 }
 
