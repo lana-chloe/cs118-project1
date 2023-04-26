@@ -187,6 +187,7 @@ char* requestHandler(char* request) {
     }
 
     // replace %25 with %
+    delim = "%25";
     while(strstr(fileName, "%25") != NULL) {
         r = strstr(fileName, delim);
 
