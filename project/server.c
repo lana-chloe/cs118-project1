@@ -74,10 +74,9 @@ int main() {
     // get file name
     request = buf;
     requestName = requestHandler(request);
-    //printf("%s\n", requestName);
+    printf("%s\n", requestName);
 
     fileName = fStatus(requestName);
-    //printf("%s\n", fileName);
 
     if (fileName == NULL) {
         fileName = "error.html";
@@ -88,6 +87,8 @@ int main() {
     char tmp[strlen(fileName) + 1]; 
     strcpy(tmp, fileName);
 
+    printf("%s\n", fileName);
+        
     // file is in directory
     if (fileStatus == 1) {
         // get type of the file
@@ -107,14 +108,14 @@ int main() {
         fileLength = ftell(html_file);
         fclose(html_file);
     }
-
+    
     // send http response
     response = responseHeader(fileStatus, fileType, fileLength);
-    //printf("%s\n", response);
+    printf("%s\n", response);
 
     strcpy(buf, response);
     send(client_socket, buf, strlen(buf), 0);
-
+    
     // send file requested 
     // open correct file
     int fd;
@@ -132,6 +133,7 @@ int main() {
         }
         sent_bytes += send(client_socket, buf, read_bytes, 0);
     }
+
     close(client_socket);
     close(server_socket);
     return 0;
