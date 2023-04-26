@@ -91,7 +91,7 @@ int main() {
 
     char tmp[strlen(fileName) + 1]; 
     strcpy(tmp, fileName);
-    //printf("%s\n", fileName);
+    printf("%s\n", fileName);
         
     // file is in directory
     if (fileStatus == 1) {
@@ -241,7 +241,6 @@ char* fStatus(const char* fn) {
     char* fileName = malloc(sizeof(char) * strlen(fn));
     strcpy(fileName, fn);
     char* trueName = NULL;
-    char* tmp;
 
     for(int i = 0; i < strlen(fileName); i++) // lowercase
         fileName[i] = tolower(fileName[i]);
@@ -256,7 +255,8 @@ char* fStatus(const char* fn) {
         de = readdir(dir);
         if (!de) break; // end of directory
 
-        tmp = de->d_name;
+        char tmp[strlen(de->d_name)];
+        strcpy(tmp, de->d_name);
         for(int i = 0; i < strlen(tmp); i++) // lowercase
             tmp[i] = tolower(tmp[i]);
 
