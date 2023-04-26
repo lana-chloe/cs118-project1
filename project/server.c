@@ -276,7 +276,7 @@ char* responseHeader(int fileStatus, char* fileType, int fileLength) {
         strcat(re,"Connection: close\r\n\n");
     }
     else {
-        strcat(re,"404 Not Found\r\n");
+        strcat(re," 404 Not Found\r\n");
         strcat(re,"Content-Type: NONE\r\n\n");
     }
 
