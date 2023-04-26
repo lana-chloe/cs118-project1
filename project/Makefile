@@ -4,15 +4,14 @@ DEPS=
 OBJ=server.o
 USERID=105817312
 
-all: server
-
-server: server.c
-	gcc -o server server.c
-
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-clean: // this is not right
+all: server
+server: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+clean:
 	rm -rf *.o server *.tar.gz
 
 dist: tarball
