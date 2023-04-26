@@ -122,21 +122,22 @@ int main() {
     send(client_socket, buf, strlen(buf), 0);
     
     // send file requested 
-    // open correct file
-    int fd;
-    if(fileStatus == 1)
+    if(fileStatus == 1) {
+        int fd;
         fd = open(tmp, O_RDONLY);
-    else fd = open("error.html", O_RDONLY);
-
-    // read file
-    int sent_bytes = 0;
-    while (sent_bytes < fileLength) {
-        int read_bytes = read(fd, buf, BUF_SIZE);
-        if (read_bytes < 0) {
-            printf("ERROR failed to read from file.\n");
-            return 1;
+        int sent_bytes = 0;
+        while (sent_bytes < fileLength) {
+            int read_bytes = read(fd, buf, BUF_SIZE);
+            if (read_bytes < 0) {
+                printf("ERROR failed to read from file.\n");
+                return 1;
+            }
+            sent_bytes += send(client_socket, buf, read_bytes, 0);
         }
-        sent_bytes += send(client_socket, buf, read_bytes, 0);
+    }
+    else { // send 404 erro html file
+        strcpy(buf, "<html><body> 404 error Not Found </body></html>");
+        send(client_socket, buf, strlen(buf), 0);
     }
 
     close(client_socket);
@@ -163,7 +164,7 @@ char* requestHandler(char* request) {
         return fileName;
     }
 
-    // replace %20 with spaces
+    // replace %20 with space
     delim = "%20";
     char* r; // right substring of %20
     char* l; // left substring of %20
@@ -190,7 +191,32 @@ char* requestHandler(char* request) {
             l[strlen(l)] = r[0];
             r++;
         }
+        fileName = l;
+    }
 
+    // replace %25 with %
+    while(strstr(fileName, "%25") != NULL) {
+        r = strstr(fileName, delim);
+
+        size_t size = strlen(fileName) - strlen(r) + 1;
+
+        l = malloc(sizeof(char) * size);
+        strncpy(l, fileName, size - 1);
+
+        r = r + 3;
+
+        l[strlen(l)] = '%';
+        l[strlen(l) + 1] = '\0';
+
+        // add right substring to left substring
+        while(l) {
+            if (strcmp(r, "\0") == 0) {
+                l[strlen(l)] = '\0';
+                break;
+            }
+            l[strlen(l)] = r[0];
+            r++;
+        }
         fileName = l;
     }
 
