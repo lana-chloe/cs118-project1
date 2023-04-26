@@ -84,14 +84,13 @@ int main() {
     fileName = fStatus(requestName);
 
     if (fileName == NULL) {
-        fileName = "error.html";
+        fileName = "";
         fileStatus = 0;
     }
     else fileStatus = 1;
 
     char tmp[strlen(fileName) + 1]; 
     strcpy(tmp, fileName);
-
     //printf("%s\n", fileName);
         
     // file is in directory
@@ -100,14 +99,6 @@ int main() {
         fileType = fType(fileName);
 
         // get size of the file
-        FILE* html_file = fopen(fileName, "r");
-        fseek(html_file, 0, SEEK_END); 
-        fileLength = ftell(html_file);
-        fclose(html_file);
-    }
-    // default 404 error file 
-    else {
-        // get size of error file
         FILE* html_file = fopen(fileName, "r");
         fseek(html_file, 0, SEEK_END); 
         fileLength = ftell(html_file);
@@ -142,6 +133,7 @@ int main() {
 
     close(client_socket);
     close(server_socket);
+
     return 0;
 }
 
