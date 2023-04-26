@@ -135,7 +135,7 @@ int main() {
             sent_bytes += send(client_socket, buf, read_bytes, 0);
         }
     }
-    else { // send 404 erro html file
+    else { // send 404 error html file
         strcpy(buf, "<html><body> 404 error Not Found </body></html>");
         send(client_socket, buf, strlen(buf), 0);
     }
@@ -302,8 +302,7 @@ char* responseHeader(int fileStatus, char* fileType, int fileLength) {
         strcat(re,"Connection: close\r\n\n");
     }
     else {
-        strcat(re," 404 Not Found\r\n");
-        strcat(re,"Content-Type: NONE\r\n\n");
+        strcat(re," 404 Not Found\r\n\n");
     }
 
     header = malloc(strlen(re)+1);
