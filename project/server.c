@@ -22,10 +22,7 @@ char* responseHeader(int, char*, int);// builds response header
 int main() {
     // create server socket
     int server_socket;
-    if ((server_socket = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("ERROR opening socket");
-        exit(1);
-    }
+    server_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     // set SO_REUSEPORT
     int optval = 1;
@@ -39,32 +36,18 @@ int main() {
     server_address.sin_port = htons(PORT);
 
     // bind port
-    if (bind(server_socket, (struct sockaddr *) &server_address, sizeof(server_address)) < 0) {
-        perror("ERROR on binding");
-        exit(1);
-    }
+    bind(server_socket, (struct sockaddr *) &server_address, sizeof(server_address));
 
     // listen for connections
-    if (listen(server_socket, CONNECTIONS) < 0) {
-        perror("ERROR listen failed");
-        exit(1);
-    }
+    listen(server_socket, CONNECTIONS);
  
     // connect to client
     int client_socket, numbytes;
     char buf[BUF_SIZE];
-
-    if ((client_socket = accept(server_socket, NULL, NULL)) < 0) {
-        perror("ERROR on accept");
-        exit(1);
-    }
+    client_socket = accept(server_socket, NULL, NULL);
 
     // get http request
-    if ((numbytes = recv(client_socket, buf, BUF_SIZE-1, 0)) == -1) {
-        perror("ERROR on recv");
-        exit(1);
-    }
-
+    numbytes = recv(client_socket, buf, BUF_SIZE-1, 0);
     buf[numbytes] = '\0';
     printf("%s\n", buf);
 
@@ -120,7 +103,6 @@ int main() {
         while (sent_bytes < fileLength) {
             int read_bytes = read(fd, buf, BUF_SIZE);
             if (read_bytes < 0) {
-                printf("ERROR failed to read from file.\n");
                 return 1;
             }
             sent_bytes += send(client_socket, buf, read_bytes, 0);
