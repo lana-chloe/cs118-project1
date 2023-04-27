@@ -170,29 +170,31 @@ char* requestHandler(char* request) {
 
     // replace %25 with %
     delim = "%25";
+    char* r1;
+    char* l1;
     while(strstr(fileName, "%25") != NULL) {
-        r = strstr(fileName, delim);
+        r1 = strstr(fileName, delim);
 
-        size_t size = strlen(fileName) - strlen(r) + 1;
+        size_t size = strlen(fileName) - strlen(r1) + 1;
 
-        l = malloc(sizeof(char) * size);
-        strncpy(l, fileName, size - 1);
+        l1 = malloc(sizeof(char) * size);
+        strncpy(l1, fileName, size - 1);
 
-        r = r + 3;
+        r1 = r1 + 3;
 
-        l[strlen(l)] = '%';
-        l[strlen(l) + 1] = '\0';
+        l1[strlen(l1)] = '%';
+        l1[strlen(l1) + 1] = '\0';
 
         // add right substring to left substring
-        while(l) {
-            if (strcmp(r, "\0") == 0) {
-                l[strlen(l)] = '\0';
+        while(l1) {
+            if (strcmp(r1, "\0") == 0) {
+                l1[strlen(l1)] = '\0';
                 break;
             }
-            l[strlen(l)] = r[0];
-            r++;
+            l1[strlen(l1)] = r1[0];
+            r1++;
         }
-        fileName = l;
+        fileName = l1;
     }
 
     // return file name
