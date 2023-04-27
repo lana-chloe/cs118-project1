@@ -74,7 +74,7 @@ int main() {
 
     char tmp[strlen(fileName) + 1]; 
     strcpy(tmp, fileName);
-    //printf("%s\n", fileName);
+    printf("%s\n", fileName);
         
     // file is in directory
     if (fileStatus == 1) {
@@ -112,6 +112,10 @@ int main() {
         strcpy(buf, "<html><body> 404 error Not Found </body></html>");
         send(client_socket, buf, strlen(buf), 0);
     }
+
+    free(response);
+
+    sleep(5);
 
     close(client_socket);
     close(server_socket);
@@ -174,7 +178,6 @@ char* requestHandler(char* request) {
         r = strstr(fileName, delim);
 
         size_t size = strlen(fileName) - strlen(r) + 1;
-
         l = malloc(sizeof(char) * size);
         strncpy(l, fileName, size - 1);
 
@@ -217,6 +220,7 @@ char* fType(const char* fn) {
             type="image/png";
     }
     else type = "application/octet-stream";
+    free(fileName);
     return type;
 }
 
@@ -254,6 +258,7 @@ char* fStatus(const char* fn) {
         }
     }
     closedir(dir);
+    free(fileName);
     return trueName;
 }
 
