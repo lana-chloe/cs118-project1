@@ -113,8 +113,6 @@ int main() {
         send(client_socket, buf, strlen(buf), 0);
     }
 
-    sleep(1);
-
     close(client_socket);
     close(server_socket);
 
