@@ -14,6 +14,9 @@
 #define PORT 8080
 #define BUF_SIZE 1024
 
+void replaceSpaces(char*);
+void replacePercent(char* str);
+
 char* requestHandler(char*); // parses http request, returns file name on the request header
 char* fType(const char*); // returns file type
 char* fStatus(const char*); // returns true file name if file is found
@@ -119,6 +122,36 @@ int main() {
     return 0;
 }
 
+void replaceSpaces(char* str) {
+    int i, j;
+    int len = strlen(str);
+
+    for (i = 0, j = 0; i < len; i++, j++) {
+        if (str[i] == '%' && str[i+1] == '2' && str[i+2] == '0') {
+            str[j] = ' ';
+            i += 2;
+        } else {
+            str[j] = str[i];
+        }
+    }
+    str[j] = '\0';
+}
+
+void replacePercent(char* str) {
+    int i, j;
+    int len = strlen(str);
+
+    for (i = 0, j = 0; i < len; i++, j++) {
+        if (str[i] == '%' && str[i+1] == '2' && str[i+2] == '5') {
+            str[j] = '%';
+            i += 2;
+        } else {
+            str[j] = str[i];
+        }
+    }
+    str[j] = '\0';
+}
+
 char* requestHandler(char* request) {
     char* fileName;
     char* delim;
@@ -138,66 +171,9 @@ char* requestHandler(char* request) {
         return fileName;
     }
 
-    // replace %20 with space
-    delim = "%20";
-    char* r; // right substring of %20
-    char* l; // left substring of %20
+    replaceSpaces(fileName);
+    replacePercent(fileName);
 
-    while(strstr(fileName, "%20") != NULL) {
-        r = strstr(fileName, delim);
-
-        size_t size = strlen(fileName) - strlen(r) + 1;
-
-        l = malloc(sizeof(char) * size);
-        strncpy(l, fileName, size - 1);
-
-        r = r + 3;
-
-        l[strlen(l)] = ' ';
-        l[strlen(l) + 1] = '\0';
-
-        // add right substring to left substring
-        while(l) {
-            if (strcmp(r, "\0") == 0) {
-                l[strlen(l)] = '\0';
-                break;
-            }
-            l[strlen(l)] = r[0];
-            r++;
-        }
-        fileName = l;
-    }
-
-    // replace %25 with %
-    delim = "%25";
-    char* r1;
-    char* l1;
-    while(strstr(fileName, "%25") != NULL) {
-        r1 = strstr(fileName, delim);
-
-        size_t size = strlen(fileName) - strlen(r1) + 1;
-
-        l1 = malloc(sizeof(char) * size);
-        strncpy(l1, fileName, size - 1);
-
-        r1 = r1 + 3;
-
-        l1[strlen(l1)] = '%';
-        l1[strlen(l1) + 1] = '\0';
-
-        // add right substring to left substring
-        while(l1) {
-            if (strcmp(r1, "\0") == 0) {
-                l1[strlen(l1)] = '\0';
-                break;
-            }
-            l1[strlen(l1)] = r1[0];
-            r1++;
-        }
-        fileName = l1;
-    }
-
-    // return file name
     return (fileName + 1);
 }
 
@@ -219,6 +195,7 @@ char* fType(const char* fn) {
             type="image/png";
     }
     else type = "application/octet-stream";
+    free(fileName);
     return type;
 }
 
@@ -256,6 +233,7 @@ char* fStatus(const char* fn) {
         }
     }
     closedir(dir);
+    free(fileName);
     return trueName;
 }
 
@@ -282,7 +260,6 @@ char* responseHeader(int fileStatus, char* fileType, int fileLength) {
         strcat(re," 404 Not Found\r\n\n");
     }
 
-    header = malloc(strlen(re)+1);
-    strcpy(header,re);
+    header = re;
     return header;
 }
