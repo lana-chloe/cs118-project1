@@ -113,7 +113,7 @@ int main() {
         send(client_socket, buf, strlen(buf), 0);
     }
 
-    free(response);
+    //free(response);
 
     sleep(5);
 
@@ -220,7 +220,7 @@ char* fType(const char* fn) {
             type="image/png";
     }
     else type = "application/octet-stream";
-    free(fileName);
+    //free(fileName);
     return type;
 }
 
@@ -258,7 +258,7 @@ char* fStatus(const char* fn) {
         }
     }
     closedir(dir);
-    free(fileName);
+    //free(fileName);
     return trueName;
 }
 
