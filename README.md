@@ -31,10 +31,16 @@ docker compose down -v --rmi all --remove-orphans
   - Use http://localhost:8080 to access the HTTP server in the container.
 - Files in this repo are in the `/project` folder. That means, `server.c` is `/project/project/server.c` in the container.
 
-## TODO
+## PROJECT REPORT
+Problems I ran into...
 
-    ###########################################################
-    ##                                                       ##
-    ## REPLACE CONTENT OF THIS FILE WITH YOUR PROJECT REPORT ##
-    ##                                                       ##
-    ###########################################################
+I struggled a bit with learning how to manipulate c strings, replace substrings, use char pointers in c, etc.. I brushed up on these concepts and ended up using char pointers to parse the HTTP request and malloc to hardcode the string the pointers point to in memory.
+
+I didn't know the URL encoded spaces with %20 at first, so I had to go back and implement some code that takes the parsed string from the HTTP request and replace every instance of "%20" with ' '.
+
+Similarly, I didn't know the URL encodes '%' with "%25", so I had to go back and fix that as well.
+
+I was stuck on the 404 error code http response for a bit. At first I was sending an error.html file in my local directory to display the "404 error Not Found" text on the server, but ultimately fixed it by sending the literal string equivalent of that html file to the client since error.html would not be used/available in the testing environment.
+
+Acknowledgements:
+- Beej’s Guide to Network Programming
