@@ -46,77 +46,81 @@ int main() {
  
     // connect to client
     int client_socket, numbytes;
-    char buf[BUF_SIZE];
-    client_socket = accept(server_socket, NULL, NULL);
+    while(1) {
+        char buf[BUF_SIZE];
+        client_socket = accept(server_socket, NULL, NULL);
 
-    // get http request
-    numbytes = recv(client_socket, buf, BUF_SIZE-1, 0);
-    buf[numbytes] = '\0';
-    printf("%s\n", buf);
+        // get http request
+        numbytes = recv(client_socket, buf, BUF_SIZE-1, 0);
+        buf[numbytes] = '\0';
+        printf("%s\n", buf);
 
-    char* response;
-    char* request;
-    char* requestName;
-    char* fileName;
-    char* fileType;
+        char* response;
+        char* request;
+        char* requestName;
+        char* fileName;
+        char* fileType;
 
-    int fileLength, fileStatus;
+        int fileLength, fileStatus;
 
-    // get file name
-    request = buf;
-    requestName = requestHandler(request);
-    //printf("%s\n", requestName);
+        // get file name
+        request = buf;
+        requestName = requestHandler(request);
+        //printf("%s\n", requestName);
 
-    fileName = fStatus(requestName);
+        fileName = fStatus(requestName);
 
-    if (fileName == NULL) {
-        fileName = "";
-        fileStatus = 0;
-    }
-    else fileStatus = 1;
-
-    char tmp[strlen(fileName) + 1]; 
-    strcpy(tmp, fileName);
-    //printf("%s\n", fileName);
-        
-    // file is in directory
-    if (fileStatus == 1) {
-        // get type of the file
-        fileType = fType(fileName);
-
-        // get size of the file
-        FILE* html_file = fopen(fileName, "r");
-        fseek(html_file, 0, SEEK_END); 
-        fileLength = ftell(html_file);
-        fclose(html_file);
-    }
-    
-    // send http response
-    response = responseHeader(fileStatus, fileType, fileLength);
-    printf("%s\n", response);
-
-    strcpy(buf, response);
-    send(client_socket, buf, strlen(buf), 0);
-    
-    // send file requested 
-    if(fileStatus == 1) {
-        int fd;
-        fd = open(tmp, O_RDONLY);
-        int sent_bytes = 0;
-        while (sent_bytes < fileLength) {
-            int read_bytes = read(fd, buf, BUF_SIZE);
-            if (read_bytes < 0) {
-                return 1;
-            }
-            sent_bytes += send(client_socket, buf, read_bytes, 0);
+        if (fileName == NULL) {
+            fileName = "";
+            fileStatus = 0;
         }
-    }
-    else { // send 404 error html file
-        strcpy(buf, "<html><body> 404 error Not Found </body></html>");
+        else fileStatus = 1;
+
+        char tmp[strlen(fileName) + 1]; 
+        strcpy(tmp, fileName);
+        printf("%s\n", fileName);
+        
+        // file is in directory
+        if (fileStatus == 1) {
+            // get type of the file
+            fileType = fType(fileName);
+
+            // get size of the file
+            FILE* html_file = fopen(fileName, "r");
+            fseek(html_file, 0, SEEK_END); 
+            fileLength = ftell(html_file);
+            fclose(html_file);
+        }
+        
+        // send http response
+        response = responseHeader(fileStatus, fileType, fileLength);
+        printf("%s\n", response);
+
+        strcpy(buf, response);
         send(client_socket, buf, strlen(buf), 0);
+        
+        // send file requested 
+        if(fileStatus == 1) {
+            int fd;
+            fd = open(tmp, O_RDONLY);
+            int sent_bytes = 0;
+            while (sent_bytes < fileLength) {
+                int read_bytes = read(fd, buf, BUF_SIZE);
+                if (read_bytes < 0) {
+                    return 1;
+                }
+                sent_bytes += send(client_socket, buf, read_bytes, 0);
+            }
+        }
+        else { // send 404 error html file
+            strcpy(buf, "<html><body> 404 error Not Found </body></html>");
+            send(client_socket, buf, strlen(buf), 0);
+        }
+        //shutdown(client_socket, SHUT_WR);
+        close(client_socket);
+        printf("Closed client socket.\n");
     }
 
-    close(client_socket);
     close(server_socket);
 
     return 0;
